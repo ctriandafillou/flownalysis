@@ -4,7 +4,7 @@
 \alias{merge_flowSet}
 \title{Merge a flowSet into a dataframe}
 \usage{
-merge_flowSet(fs, rename.cols = T)
+merge_flowSet(fs, rename.cols = F)
 }
 \arguments{
 \item{fs}{The flowset to be merged}
