@@ -12,7 +12,7 @@ rename_fcs_cols(dataframe, print.names = F)
 \item{print.names}{whether or not to print the resulting column names; default is F}
 }
 \value{
-a dataframe in the same format as merge_flowSet, but with neat column names
+a dataframe in the same format as merge_flowSet, but with shorter column names
 }
 \description{
 Rename the columns of a dataframe intelligently
