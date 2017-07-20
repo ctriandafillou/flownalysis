@@ -1,4 +1,4 @@
-#' Use kmeans clustering to detect subpopulations in a flow cytometry experiment
+#' Use kmeans clustering to detect subpopulations in a flow cytometry experiment: implements methodology from the flowPeaks package by Ge Y. et al: see citation("flowPeaks")
 #'
 #' @param flow.df the name of the flow experiment in the form of a dataframe (assumed output from merge_flowSet)
 #' @param cluster.on the column names to cluster on; currently only clustering on subsets of the data is allowed

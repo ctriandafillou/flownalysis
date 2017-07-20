@@ -2,7 +2,7 @@
 % Please edit documentation in R/cluster.flow.R
 \name{cluster.flow}
 \alias{cluster.flow}
-\title{Use kmeans clustering to detect subpopulations in a flow cytometry experiment}
+\title{Use kmeans clustering to detect subpopulations in a flow cytometry experiment: implements methodology from the flowPeaks package by Ge Y. et al: see citation("flowPeaks")}
 \usage{
 cluster.flow(flow.df, cluster.on, tol.u = 1, h0.u = 1, h.u = 1.5,
   qc.exp = FALSE, qc.ax1 = NULL, qc.ax2 = NULL)
@@ -28,5 +28,5 @@ cluster.flow(flow.df, cluster.on, tol.u = 1, h0.u = 1, h.u = 1.5,
 the input dataframe flow.df with an additional column called 'cluster' that contains the cluster assignment for each observation
 }
 \description{
-Use kmeans clustering to detect subpopulations in a flow cytometry experiment
+Use kmeans clustering to detect subpopulations in a flow cytometry experiment: implements methodology from the flowPeaks package by Ge Y. et al: see citation("flowPeaks")
 }
