@@ -4,8 +4,8 @@
 \alias{cc.analysis}
 \title{pHluorin Calibration Curve Analysis}
 \usage{
-cc.analysis(subset, background, id, inputs, buffer.values, xmin = 4.9,
-  xmax = 8.6)
+cc.analysis(subset, background, id, inputs = FALSE, buffer.values = FALSE,
+  xmin = 4.9, xmax = 8.6, FITC.thresh = 800, BV.thresh = 800)
 }
 \arguments{
 \item{subset}{The dataframe containing the raw calibration curve data. Identifier column should be called 'exp' and formatted as 'cc_pH.fcs'}
@@ -26,5 +26,5 @@ cc.analysis(subset, background, id, inputs, buffer.values, xmin = 4.9,
 convert.to.pH function, plot of calibration curve, analysis of fit quality
 }
 \description{
-This function takes raw data from a calibration curve experiment (yeast expressing pHluorin, flow cytometry data) and does all processing steps to construct a calibration curve that maps fluorescence ratio to pH
+This function takes raw data from a calibration curve experiment (yeast expressing pHluorin, flow cytometry data) and does all processing steps to construct a calibration curve that maps fluorescence ratio to pH. Takes *raw* (untransformed) FITC and BV510 channels as inputs!
 }

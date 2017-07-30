@@ -13,11 +13,10 @@
 
 
 
-cc.analysis <- function(subset, background, id, inputs, buffer.values, xmin=4.9, xmax=8.6){
+cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALSE, xmin=4.9, xmax=8.6, FITC.thresh = 800, BV.thresh = 800){
   bkgs <- background %>%
     separate(exp, c("experiment", "strain", "background"), convert=T, extra="drop") %>%
     group_by(strain, background, experiment) %>%
-    mutate(rel.red = PEDazzle594.A / FSC.A) %>%
     summarise_all(median)
   
   FITC.bkg <- as.numeric(filter(bkgs, strain == "by4743" & background == "buffer")$FITC.A)
@@ -26,10 +25,15 @@ cc.analysis <- function(subset, background, id, inputs, buffer.values, xmin=4.9,
   FITC.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & background == "media")$FITC.A)
   BV.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & background == "media")$BV510.A)
 
-  cc <- subset %>%
-    filter(FITC.A > 800 & BV510.A > 800) %>% # High-quality points only
-    separate(exp, c("experiment", "pH"), extra="drop") %>%
-    mutate(pH = as.numeric(plyr::mapvalues(pH, from=inputs, to=buffer.values)), pH.ratio = (BV510.A - BV.bkg) / (FITC.A - FITC.bkg))
+  if (inputs == FALSE){
+    cc <- subset %>%
+      filter(FITC.A > FITC.thresh & BV510.A > BV.thresh) %>% # High-quality points only
+      separate(exp, c("experiment", "pH"), extra="drop") %>%
+      mutate(pH = as.numeric(gsub("p", ".", pH)),
+             pH.ratio = (BV510.A - BV.bkg) / (FITC.A - FITC.bkg)) 
+  } else{
+    stop("function currently configured for inputs in dataframe")
+  }
   
   cc.quality <- nrow(cc)/nrow(subset)
   
