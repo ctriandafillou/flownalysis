@@ -31,7 +31,7 @@ cc.analysis <- function(subset, background, id, inputs, buffer.values, xmin=4.9,
     separate(exp, c("experiment", "pH"), extra="drop") %>%
     mutate(pH = as.numeric(plyr::mapvalues(pH, from=inputs, to=buffer.values)), pH.ratio = (BV510.A - BV.bkg) / (FITC.A - FITC.bkg))
   
-  cc.quality <- nrow(cc)/nrow(subset)
+  cc.quality <- nrow(cc)/nrow(subset)*100
   
   cc <- cc %>%
     group_by(pH) %>%
