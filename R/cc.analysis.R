@@ -35,7 +35,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
     stop("function currently configured for inputs in dataframe")
   }
   
-  cc.quality <- nrow(cc)/nrow(subset)
+  cc.quality <- nrow(cc)/nrow(subset)*100
   
   cc <- cc %>%
     group_by(pH) %>%
