@@ -34,7 +34,10 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
       mutate(pH = as.numeric(gsub("p", ".", pH)),
              pH.ratio = (BV510.A - BV.bkg) / (FITC.A - FITC.bkg)) 
   } else{
-    stop("function currently configured for inputs in dataframe")
+    cc <- subset %>%
+      filter(FITC.A > FITC.thresh & BV510.A > BV.thresh) %>% # High-quality points only
+      separate(exp, c("experiment", "pH"), extra="drop") %>%
+      mutate(pH = as.numeric(plyr::mapvalues(pH, from=inputs, to=buffer.values)), pH.ratio = (BV510.A - BV.bkg) / (FITC.A - FITC.bkg))
   }
   
   cc.quality <- nrow(cc)/nrow(subset)*100
