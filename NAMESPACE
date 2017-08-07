@@ -2,6 +2,7 @@
 
 export(cc.analysis)
 export(cluster.flow)
+export(fit_lin_fit)
 export(merge_flowSet)
 export(rename_fcs_cols)
 export(theme_ct_greypanels)
