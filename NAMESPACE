@@ -2,6 +2,7 @@
 
 export(cc.analysis)
 export(cluster.flow)
+export(fit_lin_fit)
 export(merge_flowSet)
 export(process.pH.induction)
 export(rename_fcs_cols)

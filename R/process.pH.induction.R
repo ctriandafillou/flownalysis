@@ -19,19 +19,19 @@ process.pH.induction <- function(df, cc=FALSE, summarise=FALSE, ref.strain='ycgt
   
   ind.bkg <- filter(bkgs, strain == ref.strain & background == ref.background) %>%
     mutate(rel.red = PEDazzle.A / FSC.A) %>%
-    summarise(rel.red = median(rel.red)) %>%
+    summarise(rel.red = median(rel.red, na.rm = T)) %>%
     as.numeric()
   
   ts <- filter(df, !grepl("controls", exp) & !grepl("cc", exp)) %>%
-    separate(exp, c("timepoint", "treatment", "pH", "fitness"), extra = "drop", convert = TRUE) %>%
+    separate(exp, c("timepoint", "treatment", "shock.pH", "fitness"), extra = "drop", convert = TRUE) %>%
     mutate(rel.red = (PEDazzle.A / FSC.A) / ind.bkg)
   
   if (summarise == TRUE) {
     ts <- ts %>%
-      group_by(timepoint, treatment, pH, fitness, population) %>%
+      group_by(timepoint, treatment, shock.pH, fitness, population) %>%
       summarise(med.red = median(rel.red, na.rm = T),
-                red.high = median(rel.red, na.rm = T),
-                red.low = median(rel.red, na.rm = T))
+                red.high = quantile(rel.red, 0.75, na.rm = T),
+                red.low = quantile(rel.red, 0.25, na.rm = T))
     return(ts)
   } else {
     return(ts)
