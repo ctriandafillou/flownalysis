@@ -4,10 +4,14 @@
 \alias{merge_flowSet}
 \title{Merge a flowSet into a dataframe}
 \usage{
-merge_flowSet(fs, rename.cols = T)
+merge_flowSet(fs, rename.cols = T, method = "old")
 }
 \arguments{
 \item{fs}{The flowset to be merged}
+
+\item{rename.cols}{whether or not to rename the columns of the dataframe to short channel names; default is TRUE}
+
+\item{method}{the method for renaming columns; will only be used if rename.cols = TRUE; default is "old"}
 }
 \value{
 a tidy dataframe of flow cytometry data; rows are observations, columns are channels; the identifier column is by default the name of the fcs file and is called 'exp'
