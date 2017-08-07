@@ -2,11 +2,11 @@
 #'
 #' @param dataframe the name of the dataframe to be renamed
 #' @param print.names whether or not to print the resulting column names; default is F
-#' @param method method of column renaming; options are "old" (first iteration, better for non-HTS instrument, use with character swapped values), "new" (second version, better for HTS instrument, use with UNSWAPPED values); default is "new"
+#' @param method method of column renaming; options are "old" (first iteration, better for non-HTS instrument, use with character swapped values), "new" (second version, better for HTS instrument, use with UNSWAPPED values); default is "old"
 #' @export
 #' @return a dataframe in the same format as merge_flowSet, but with shorter column names
 
-rename_fcs_cols <- function(dataframe, print.names=F, method="new"){
+rename_fcs_cols <- function(dataframe, print.names=F, method="old"){
   default.column.names <- colnames(dataframe)[1:(ncol(dataframe)-2)]
   if (method == "old"){
     m <- gregexpr("[[:alpha:]]+[[:digit:]]*.[[:upper:]]{1}", default.column.names)
