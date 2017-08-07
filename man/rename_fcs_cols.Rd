@@ -4,12 +4,14 @@
 \alias{rename_fcs_cols}
 \title{Rename the columns of a dataframe intelligently}
 \usage{
-rename_fcs_cols(dataframe, print.names = F)
+rename_fcs_cols(dataframe, print.names = F, method = "new")
 }
 \arguments{
 \item{dataframe}{the name of the dataframe to be renamed}
 
 \item{print.names}{whether or not to print the resulting column names; default is F}
+
+\item{method}{method of column renaming; options are "old" (first iteration, better for non-HTS instrument, use with character swapped values), "new" (second version, better for HTS instrument, use with UNSWAPPED values); default is "new"}
 }
 \value{
 a dataframe in the same format as merge_flowSet, but with shorter column names
