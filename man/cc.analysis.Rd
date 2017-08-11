@@ -5,7 +5,8 @@
 \title{pHluorin Calibration Curve Analysis}
 \usage{
 cc.analysis(subset, background, id, inputs = FALSE, buffer.values = FALSE,
-  xmin = 4.9, xmax = 8.6, FITC.thresh = 800, BV.thresh = 800)
+  xmin = 4.9, xmax = 8.6, FITC.thresh = 800, BV.thresh = 800,
+  start.list = list(a = 0.5, b = 2, c = 7, d = 0.25))
 }
 \arguments{
 \item{subset}{The dataframe containing the raw calibration curve data. Identifier column should be called 'exp' and formatted as 'cc_pH.fcs'}
@@ -25,6 +26,8 @@ cc.analysis(subset, background, id, inputs = FALSE, buffer.values = FALSE,
 \item{FITC.thresh}{Value that untransformed FITC.A (area) signal must exceed; default is 800}
 
 \item{BV.thresh}{Value that untransformed BV510.A (area) signal must exceed; default is 800}
+
+\item{start.list}{Edit the starting fitting parameters; default is list(a=.5, b=2, c=7, d=0.25) (keep this form but change numbers)}
 }
 \value{
 convert.to.pH function, plot of calibration curve, analysis of fit quality
