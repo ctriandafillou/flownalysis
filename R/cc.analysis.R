@@ -16,7 +16,7 @@
 
 
 
-cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALSE, xmin=4.9, xmax=8.6, FITC.thresh = 800, BV.thresh = 800, start.list = list(a=.5, b=2, c=7, d=0.25)){
+cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALSE, xmin=4.9, xmax=8.6, FITC.thresh = 800, BV.thresh = 800, start.list = list(a=.5, b=2, c=7, d=0.25), return.plot = FALSE){
   bkgs <- background %>%
     separate(exp, c("experiment", "strain", "background"), convert=T, extra="drop") %>%
     group_by(strain, background, experiment) %>%
@@ -86,4 +86,15 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   print(q)
   cat(cc.quality, "% of data was retained\n", sep="")
   cat("To convert with this calibration curve, use the function \'", fxn.name, "\'\n", sep="")
+
+  if(return.plot) {
+    p <- ggplot(data=NULL) + geom_point(aes(x=x, y=y)) + geom_line(aes(x=x2, y=y2), size=0.5)
+    p <- p + geom_errorbar(data=cc, aes(x=pH, ymin=low, ymax=high), size=0.5, width=0.05)
+    p <- p + labs(
+      x = "pH",
+      y = "Ratio 405/488")
+
+    return(p)
+  }
+
 }
