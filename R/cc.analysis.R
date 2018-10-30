@@ -22,11 +22,11 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
     group_by(strain, background, experiment) %>%
     summarise_all(median)
 
-  FITC.bkg <- as.numeric(filter(bkgs, strain == "by4743" & background == "buffer")$FITC.A)
-  BV.bkg <- as.numeric(filter(bkgs, strain == "by4743" & background == "buffer")$BV510.A)
+  FITC.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("buffer", background))$FITC.A)
+  BV.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("buffer", background))$BV510.A)
 
-  FITC.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & background == "media")$FITC.A)
-  BV.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & background == "media")$BV510.A)
+  FITC.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$FITC.A)
+  BV.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$BV510.A)
 
   if (inputs == FALSE){
     cc <- subset %>%
