@@ -76,7 +76,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
     else corrected.ratio <- (BV.value - BV.m.bkg) / (FITC.value - FITC.m.bkg)
     min.ratio = min(y2)
     max.ratio = max(y2)
-    ifelse(corrected.ratio < min.ratio, NA, ifelse(corrected.ratio < max.ratio, (log((p[1]/(corrected.ratio-p[4])) - 1)/-p[2]) + p[3], NA))
+    return(ifelse(corrected.ratio < min.ratio, NA, ifelse(corrected.ratio < max.ratio, (log((p[1]/(corrected.ratio-p[4])) - 1)/-p[2]) + p[3], NA)))
   }
   fxn.name <- paste("convert.to.pH", as.character(id), sep=".")
   assign(fxn.name, convert.to.pH, envir = .GlobalEnv)
