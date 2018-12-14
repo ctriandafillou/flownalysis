@@ -11,12 +11,13 @@
 #' @param FITC.thresh Value that untransformed FITC.A (area) signal must exceed; default is 800
 #' @param BV.thresh Value that untransformed BV510.A (area) signal must exceed; default is 800
 #' @param start.list Edit the starting fitting parameters; default is list(a=.5, b=2, c=7, d=0.25) (keep this form but change numbers)
+#' @param return.plot Boolean, whether or not to create a plot of the resulting calibration curve. Default is TRUE
 #' @export
 #' @return convert.to.pH function, plot of calibration curve, analysis of fit quality
 
 
 
-cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALSE, xmin=4.9, xmax=8.6, FITC.thresh = 800, BV.thresh = 800, start.list = list(a=.5, b=2, c=7, d=0.25), return.plot = FALSE){
+cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALSE, xmin=4.9, xmax=8.6, FITC.thresh = 800, BV.thresh = 800, start.list = list(a=.5, b=2, c=7, d=0.25), return.plot = TRUE){
   bkgs <- background %>%
     separate(exp, c("experiment", "strain", "background"), convert=T, extra="drop") %>%
     group_by(strain, background, experiment) %>%
@@ -34,7 +35,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
       separate(exp, c("experiment", "pH"), extra="drop") %>%
       mutate(pH = as.numeric(gsub("p", ".", pH)),
              pH.ratio = (BV510.A - BV.bkg) / (FITC.A - FITC.bkg))
-  } else{
+  } else {
     cc <- subset %>%
       filter(FITC.A > FITC.thresh & BV510.A > BV.thresh) %>% # High-quality points only
       separate(exp, c("experiment", "pH"), extra="drop") %>%
@@ -62,13 +63,6 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   x2 <- seq(xmin, xmax, 0.01)
   y2 <- sigmoid(params, x2)
 
-  q <- ggplot(data=NULL) + geom_point(aes(x=x, y=y)) + geom_line(aes(x=x2, y=y2), size=0.5)
-  q <- q+ geom_errorbar(data=cc, aes(x=pH, ymin=low, ymax=high), size=0.5, width=0.05)
-  q <- q + theme_minimal() + labs(
-    x = "pH",
-    y = "Ratio 405/488",
-    title = paste("pHluorin calibration curve", id, sep = " ")) + geom_text(aes(x=5.8, y=0.55, label="ratio==frac(a,1+e^(-b(x-c))) + d"), parse = T)
-
   convert.to.pH <- function(FITC.value=NA, BV.value=NA, ratio.value=NA, p=params, lims=y2, ratio=F){
     # ratio = [a / (1 + exp(-b(pH-c)))] + d
     # pH = [log(a / (ratio - d) - 1) / -b] + c
@@ -81,20 +75,22 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   fxn.name <- paste("convert.to.pH", as.character(id), sep=".")
   assign(fxn.name, convert.to.pH, envir = .GlobalEnv)
 
+  if(return.plot) {
+    q <- ggplot(data=NULL) + geom_point(aes(x=x, y=y)) + geom_line(aes(x=x2, y=y2), size=0.5)
+    q <- q + geom_errorbar(data=cc, aes(x=pH, ymin=low, ymax=high), size=0.5, width=0.05)
+    q <- q + theme_minimal() + labs(
+      x = "pH",
+      y = "Ratio 405/488",
+      title = paste("pHluorin calibration curve", id, sep = " "))
+    # Uncomment to add equation to plot
+    #+ geom_text(aes(x=5.8, y=0.55, label="ratio==frac(a,1+e^(-b(x-c))) + d"), parse = T)
+
+    print(q)
+  }
+  
   # Completion statement:
   cat("Calibration curve with experiment ID \'", id, "\' complete:\n", sep="")
-  print(q)
   cat(cc.quality, "% of data was retained\n", sep="")
   cat("To convert with this calibration curve, use the function \'", fxn.name, "\'\n", sep="")
-
-  if(return.plot) {
-    p <- ggplot(data=NULL) + geom_point(aes(x=x, y=y)) + geom_line(aes(x=x2, y=y2), size=0.5)
-    p <- p + geom_errorbar(data=cc, aes(x=pH, ymin=low, ymax=high), size=0.5, width=0.05)
-    p <- p + labs(
-      x = "pH",
-      y = "Ratio 405/488")
-
-    return(p)
-  }
 
 }
