@@ -3,6 +3,7 @@
 export(cc.analysis)
 export(cluster.flow)
 export(fit_lin_fit)
+export(generate.red.bkg)
 export(merge_flowSet)
 export(pH.pka.analysis)
 export(pH_rolling_mean)
