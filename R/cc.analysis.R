@@ -32,7 +32,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   ## Media; new as of 2019-01, adapts to different types of media
   
   # Default values for background subtraction
-  # Note that if multiple medias are present they will get averaged together
+  # Note that if multiple medias are present only the first will be returned, giving spurrious results
   # A better behavior would be to explicitly select for the correct background, but not sure exactly how to do that yet
   FITC.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$FITC.A)
   BV.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$BV510.A)
@@ -90,9 +90,8 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   ## Still blows my mind that this is allowed
   ### Thanks R
   
-  
-  convert.to.pH <- function(FITC.value=NA, BV.value=NA, ratio.value=NA, p=params, lims=y2, ratio=F,
-                            media.type = "unspecified"){
+  convert.to.pH <- function(FITC.value=NA, BV.value=NA, ratio.value=NA, p=params, lims=y2, ratio=FALSE,
+                            media.type="unspecified", verbose=FALSE){
     # ratio = [a / (1 + exp(-b(pH-c)))] + d
     # pH = [log(a / (ratio - d) - 1) / -b] + c
     
@@ -117,8 +116,20 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
     # Set min/max
     min.ratio = min(y2)
     max.ratio = max(y2)
+    
+    # Extra info printed if verbose is TRUE:
+    if (verbose) {
+      cat("The default background value for the FITC channel is", FITC.m.bkg, "\n", sep = " ")
+      cat("The default background value for the BV510 channel is ", BV.m.bkg, "\n", sep = " ")
+      cat("The background value for the FITC channel for 7.5 media is ", FITC.m.7p5.bkg, "\n", sep = "")
+      cat("The background value for the BV510 channel for 7.5 media is ", BV.m.7p5.bkg, "\n", sep = "")
+      cat("The background value for the FITC channel for 4.0 media is ", FITC.m.4p0.bkg, "\n", sep = "")
+      cat("The background value for the BV510 channel for 4.0 media is ", BV.m.4p0.bkg, "\n", sep = "")
+    }
+    
     # Return statement
     return(ifelse(corrected.ratio < min.ratio, NA, ifelse(corrected.ratio < max.ratio, (log((p[1]/(corrected.ratio-p[4])) - 1)/-p[2]) + p[3], NA)))
+
   }
   
   
@@ -142,5 +153,5 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   cat("Calibration curve with experiment ID \'", id, "\' complete:\n", sep="")
   cat(cc.quality, "% of data was retained\n", sep="")
   cat("To convert with this calibration curve, use the function \'", fxn.name, "\'\n", sep="")
-
+  
 }
