@@ -104,6 +104,9 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
       } else if (media.type == "4p0") { # Recovery in 4.0 SC, explicitly stated
         corrected.ratio <- (BV.value = BV.m.4p0.bkg) / (FITC.value - FITC.m.4p0.bkg)
       } else if (media.type == "unspecified") { # Default condition; recovery in SC not explicitly stated
+        if (length(FITC.m.bkg != 1)) {
+          cat("WARNING: Multiple backgrounds in input backgrounds dataframe detected. Defaulting to first entry.\nIf this behavior is not expected, check number of background readings submitted to 'cc.analysis'.")
+        }
         corrected.ratio <- (BV.value - BV.m.bkg) / (FITC.value - FITC.m.bkg)
       } else {
         # This won't print for every row if applied by mutate, which is nice
@@ -119,8 +122,8 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
     
     # Extra info printed if verbose is TRUE:
     if (verbose) {
-      cat("The default background value for the FITC channel is", FITC.m.bkg, "\n", sep = " ")
-      cat("The default background value for the BV510 channel is ", BV.m.bkg, "\n", sep = " ")
+      #cat("The default background value for the FITC channel is", FITC.m.bkg, "\n", sep = " ")
+      #cat("The default background value for the BV510 channel is ", BV.m.bkg, "\n", sep = " ")
       cat("The background value for the FITC channel for 7.5 media is ", FITC.m.7p5.bkg, "\n", sep = "")
       cat("The background value for the BV510 channel for 7.5 media is ", BV.m.7p5.bkg, "\n", sep = "")
       cat("The background value for the FITC channel for 4.0 media is ", FITC.m.4p0.bkg, "\n", sep = "")
