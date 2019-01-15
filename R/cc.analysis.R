@@ -102,7 +102,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
       if (media.type == "7p5") { # Condition where recovery was in SC buffered to pH 7.5
         corrected.ratio <- (BV.value - BV.m.7p5.bkg) / (FITC.value - FITC.m.7p5.bkg)
       } else if (media.type == "4p0") { # Recovery in 4.0 SC, explicitly stated
-        corrected.ratio <- (BV.value = BV.m.4p0.bkg) / (FITC.value - FITC.m.4p0.bkg)
+        corrected.ratio <- (BV.value - BV.m.4p0.bkg) / (FITC.value - FITC.m.4p0.bkg)
       } else if (media.type == "unspecified") { # Default condition; recovery in SC not explicitly stated
         if (length(FITC.m.bkg != 1)) {
           cat("WARNING: Multiple backgrounds in input backgrounds dataframe detected. Defaulting to first entry.\nIf this behavior is not expected, check number of background readings submitted to 'cc.analysis'.")
