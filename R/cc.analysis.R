@@ -12,6 +12,10 @@
 #' @param BV.thresh Value that untransformed BV510.A (area) signal must exceed; default is 800
 #' @param start.list Edit the starting fitting parameters; default is list(a=.5, b=2, c=7, d=0.25) (keep this form but change numbers)
 #' @param return.plot Boolean, whether or not to create a plot of the resulting calibration curve. Default is TRUE
+<<<<<<< HEAD
+=======
+#' @param media.type Options are "7p5" for buffered SC, "4p0" for regular SC, or (default) "unspecified", which assumes regular SC and will average over ALL media backgrounds (datasets prior to Nov 2018)
+>>>>>>> backgrounds_cc
 #' @export
 #' @return convert.to.pH function, plot of calibration curve, analysis of fit quality
 
@@ -31,7 +35,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   ## Media; new as of 2019-01, adapts to different types of media
   
   # Default values for background subtraction
-  # Note that if multiple medias are present only the first will be used, giving spurrious results
+  # Note that if multiple medias are present only the first will be returned, giving spurrious results
   # A better behavior would be to explicitly select for the correct background, but not sure exactly how to do that yet
   FITC.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$FITC.A)
   BV.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$BV510.A)
@@ -45,6 +49,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   BV.m.4p0.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("4p0media", background))$BV510.A)
   
   
+  ## Fit calibration curve
   
   if (inputs == FALSE){
     cc <- subset %>%
@@ -84,20 +89,52 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   
   
   
-  
-  
-  
-  
-  
-  convert.to.pH <- function(FITC.value=NA, BV.value=NA, ratio.value=NA, p=params, lims=y2, ratio=F, media.type = NULL){
+  # Add to function that will be exported to the main environment
+  ## Still blows my mind that this is allowed
+  ### Thanks R
+  convert.to.pH <- function(FITC.value=NA, BV.value=NA, ratio.value=NA, p=params, lims=y2, ratio=FALSE,
+                            media.type="unspecified", verbose=FALSE){
     # ratio = [a / (1 + exp(-b(pH-c)))] + d
     # pH = [log(a / (ratio - d) - 1) / -b] + c
+    
     if (ratio == T) corrected.ratio = ratio.value
-    else corrected.ratio <- (BV.value - BV.m.bkg) / (FITC.value - FITC.m.bkg)
+    else { # only calculate the corrected ratio if it's going to be used
+      
+      # Consider changing these to logical greps rather than exact values to make things more robust?
+      if (media.type == "7p5") { # Condition where recovery was in SC buffered to pH 7.5
+        corrected.ratio <- (BV.value - BV.m.7p5.bkg) / (FITC.value - FITC.m.7p5.bkg)
+      } else if (media.type == "4p0") { # Recovery in 4.0 SC, explicitly stated
+        corrected.ratio <- (BV.value - BV.m.4p0.bkg) / (FITC.value - FITC.m.4p0.bkg)
+      } else if (media.type == "unspecified") { # Default condition; recovery in SC not explicitly stated
+        if (length(FITC.m.bkg != 1)) {
+          cat("WARNING: Multiple backgrounds in input backgrounds dataframe detected. Defaulting to first entry.\nIf this behavior is not expected, check number of background readings submitted to 'cc.analysis'.")
+        }
+        corrected.ratio <- (BV.value - BV.m.bkg) / (FITC.value - FITC.m.bkg)
+      } else {
+        # This won't print for every row if applied by mutate, which is nice
+        cat('Unrecognized media type entered, not converting')
+        return(NA)
+      }
+      
+    }
+    
+    # Set min/max
     min.ratio = min(y2)
     max.ratio = max(y2)
-    return(ifelse(corrected.ratio < min.ratio, NA, ifelse(corrected.ratio < max.ratio, (log((p[1]/(corrected.ratio-p[4])) - 1)/-p[2]) + p[3], NA)))
     
+    # Extra info printed if verbose is TRUE:
+    if (verbose) {
+      #cat("The default background value for the FITC channel is", FITC.m.bkg, "\n", sep = " ")
+      #cat("The default background value for the BV510 channel is ", BV.m.bkg, "\n", sep = " ")
+      cat("The background value for the FITC channel for 7.5 media is ", FITC.m.7p5.bkg, "\n", sep = "")
+      cat("The background value for the BV510 channel for 7.5 media is ", BV.m.7p5.bkg, "\n", sep = "")
+      cat("The background value for the FITC channel for 4.0 media is ", FITC.m.4p0.bkg, "\n", sep = "")
+      cat("The background value for the BV510 channel for 4.0 media is ", BV.m.4p0.bkg, "\n", sep = "")
+    }
+    
+    # Return statement
+    return(ifelse(corrected.ratio < min.ratio, NA, ifelse(corrected.ratio < max.ratio, (log((p[1]/(corrected.ratio-p[4])) - 1)/-p[2]) + p[3], NA)))
+
   }
   
   fxn.name <- paste("convert.to.pH", as.character(id), sep=".")
@@ -120,5 +157,5 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   cat("Calibration curve with experiment ID \'", id, "\' complete:\n", sep="")
   cat(cc.quality, "% of data was retained\n", sep="")
   cat("To convert with this calibration curve, use the function \'", fxn.name, "\'\n", sep="")
-
+  
 }

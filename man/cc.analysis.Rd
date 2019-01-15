@@ -30,6 +30,8 @@ cc.analysis(subset, background, id, inputs = FALSE, buffer.values = FALSE,
 \item{start.list}{Edit the starting fitting parameters; default is list(a=.5, b=2, c=7, d=0.25) (keep this form but change numbers)}
 
 \item{return.plot}{Boolean, whether or not to create a plot of the resulting calibration curve. Default is TRUE}
+
+\item{media.type}{Options are "7p5" for buffered SC, "4p0" for regular SC, or (default) "unspecified", which assumes regular SC and will average over ALL media backgrounds (datasets prior to Nov 2018)}
 }
 \value{
 convert.to.pH function, plot of calibration curve, analysis of fit quality
