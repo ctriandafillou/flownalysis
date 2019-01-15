@@ -12,13 +12,12 @@
 #' @param BV.thresh Value that untransformed BV510.A (area) signal must exceed; default is 800
 #' @param start.list Edit the starting fitting parameters; default is list(a=.5, b=2, c=7, d=0.25) (keep this form but change numbers)
 #' @param return.plot Boolean, whether or not to create a plot of the resulting calibration curve. Default is TRUE
-#' @param media.type 
 #' @export
 #' @return convert.to.pH function, plot of calibration curve, analysis of fit quality
 
 
 
-cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALSE, xmin=4.9, xmax=8.6, FITC.thresh = 800, BV.thresh = 800, start.list = list(a=.5, b=2, c=7, d=0.25), return.plot = TRUE, media.type = "unspecified"){
+cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALSE, xmin=4.9, xmax=8.6, FITC.thresh = 800, BV.thresh = 800, start.list = list(a=.5, b=2, c=7, d=0.25), return.plot = TRUE){
   bkgs <- background %>%
     separate(exp, c("experiment", "strain", "background"), convert=T, extra="drop") %>%
     group_by(strain, background, experiment) %>%
@@ -90,7 +89,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   
   
   
-  convert.to.pH <- function(FITC.value=NA, BV.value=NA, ratio.value=NA, p=params, lims=y2, ratio=F){
+  convert.to.pH <- function(FITC.value=NA, BV.value=NA, ratio.value=NA, p=params, lims=y2, ratio=F, media.type = NULL){
     # ratio = [a / (1 + exp(-b(pH-c)))] + d
     # pH = [log(a / (ratio - d) - 1) / -b] + c
     if (ratio == T) corrected.ratio = ratio.value
@@ -99,17 +98,8 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
     max.ratio = max(y2)
     return(ifelse(corrected.ratio < min.ratio, NA, ifelse(corrected.ratio < max.ratio, (log((p[1]/(corrected.ratio-p[4])) - 1)/-p[2]) + p[3], NA)))
     
-    #if (media.type == "basic sc") { # Condition where recovery was in SC buffered to pH 7.5
-    #  
-    #} else if (media.type == "acidic sc") { # Recovery in 4.0 SC, explicitly stated
-    #  
-    #} else if (media.type == "unspecified") { # Default condition; recovery in SC not explicitly stated
-    #  
-    #} else {
-    # 
-    #}
-    
   }
+  
   fxn.name <- paste("convert.to.pH", as.character(id), sep=".")
   assign(fxn.name, convert.to.pH, envir = .GlobalEnv)
 
