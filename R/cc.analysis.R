@@ -31,7 +31,7 @@ cc.analysis <- function(subset, background, id, inputs=FALSE, buffer.values=FALS
   ## Media; new as of 2019-01, adapts to different types of media
   
   # Default values for background subtraction
-  # Note that if multiple medias are present they will get averaged together
+  # Note that if multiple medias are present only the first will be used, giving spurrious results
   # A better behavior would be to explicitly select for the correct background, but not sure exactly how to do that yet
   FITC.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$FITC.A)
   BV.m.bkg <- as.numeric(filter(bkgs, strain == "by4743" & grepl("media", background))$BV510.A)
