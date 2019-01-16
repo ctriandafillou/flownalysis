@@ -30,12 +30,23 @@ cc.analysis(subset, background, id, inputs = FALSE, buffer.values = FALSE,
 \item{start.list}{Edit the starting fitting parameters; default is list(a=.5, b=2, c=7, d=0.25) (keep this form but change numbers)}
 
 \item{return.plot}{Boolean, whether or not to create a plot of the resulting calibration curve. Default is TRUE}
-
-\item{media.type}{Options are "7p5" for buffered SC, "4p0" for regular SC, or (default) "unspecified", which assumes regular SC and will average over ALL media backgrounds (datasets prior to Nov 2018)}
 }
 \value{
 convert.to.pH function, plot of calibration curve, analysis of fit quality
 }
 \description{
-This function takes raw data from a calibration curve experiment (yeast expressing pHluorin, flow cytometry data) and does all processing steps to construct a calibration curve that maps fluorescence ratio to pH. Takes *raw* (untransformed) FITC and BV510 channels as inputs!
+This function takes raw data from a calibration curve experiment (yeast expressing pHluorin, flow cytometry data) and does all processing steps to construct a calibration curve that maps fluorescence ratio to pH. Takes *raw* (untransformed) FITC and BV510 channels as inputs.
+}
+\details{
+NEW as of 01-2019: now the resulting conversion function can do adaptive background subtraction
+
+WARNING proper background subtraction only achieved when the data are grouped first (see examples)
+}
+\examples{
+# Given a dataframe 'df' that contains multiple samples with different backgrounds
+# background is specified in the column 'recovery'
+processed_df <- df \%>\%
+group_by(recovery) \%>\%
+mutate(pH = convert.to.pH(channel1, channel2, media.type = recovery))
+
 }

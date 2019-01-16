@@ -1,6 +1,10 @@
 #' pHluorin Calibration Curve Analysis
 #'
-#' This function takes raw data from a calibration curve experiment (yeast expressing pHluorin, flow cytometry data) and does all processing steps to construct a calibration curve that maps fluorescence ratio to pH. Takes *raw* (untransformed) FITC and BV510 channels as inputs!
+#' This function takes raw data from a calibration curve experiment (yeast expressing pHluorin, flow cytometry data) and does all processing steps to construct a calibration curve that maps fluorescence ratio to pH. Takes *raw* (untransformed) FITC and BV510 channels as inputs.
+#' 
+#' NEW as of 01-2019: now the resulting conversion function can do adaptive background subtraction
+#' 
+#' WARNING proper background subtraction only achieved when the data are grouped first (see examples)
 #' @param subset The dataframe containing the raw calibration curve data. Identifier column should be called 'exp' and formatted as 'cc_pH.fcs'
 #' @param background The dataframe containing the raw background data. Identifier column should be called 'exp' and formatted as 'experiment_strain_background' with background being either 'buffer' or 'media'
 #' @param id Name/date of experiment, will end up as part of the cc function name so use plaintext characters and no dashes
@@ -12,10 +16,14 @@
 #' @param BV.thresh Value that untransformed BV510.A (area) signal must exceed; default is 800
 #' @param start.list Edit the starting fitting parameters; default is list(a=.5, b=2, c=7, d=0.25) (keep this form but change numbers)
 #' @param return.plot Boolean, whether or not to create a plot of the resulting calibration curve. Default is TRUE
-<<<<<<< HEAD
-=======
-#' @param media.type Options are "7p5" for buffered SC, "4p0" for regular SC, or (default) "unspecified", which assumes regular SC and will average over ALL media backgrounds (datasets prior to Nov 2018)
->>>>>>> backgrounds_cc
+#' 
+#' @examples
+#' # Given a dataframe 'df' that contains multiple samples with different backgrounds
+#' # background is specified in the column 'recovery'
+#' processed_df <- df %>%
+#' group_by(recovery) %>%
+#' mutate(pH = convert.to.pH(channel1, channel2, media.type = recovery))
+#' 
 #' @export
 #' @return convert.to.pH function, plot of calibration curve, analysis of fit quality
 
