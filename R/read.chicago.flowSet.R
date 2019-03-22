@@ -14,7 +14,7 @@ read.chicago.flowSet <- function(filename, instrument = "nHTS", fullpath = FALSE
   
   # Default behavior is to look in 'flow' folder
   if(fullpath){
-    filename = fullpath
+    filename = filename
   }
   else {
     filename = paste0("/Users/Triandafillou/Dropbox (Drummond Lab)/cat/data/flow/", filename)
