@@ -9,6 +9,6 @@
 build_ff_df_w_abstime <- function(ff) {
   to.return <- as.data.frame(exprs(ff))
   datetime = strptime(paste(description(ff)$`$DATE`, description(ff)$`$BTIM`), format = "%d-%b-%Y %H:%M:%S")
-  to.return$abstime = as.character(datetime)
+  to.return$abstime = as.POSIXct(datetime)
   return(to.return)
 }
