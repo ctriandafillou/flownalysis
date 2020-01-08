@@ -4,10 +4,12 @@
 \alias{fit_lin_fit}
 \title{Processes a flow dataset of induction timeseries}
 \usage{
-fit_lin_fit(dat)
+fit_lin_fit(dat, return_model = FALSE)
 }
 \arguments{
 \item{dat}{The dataframe containing columns corresponding to recovery times ("timepoint") and log ratios of cell types ("growth.ratio")}
+
+\item{return_model}{boolean; whether or not to return the modeled object}
 }
 \value{
 dataframe with slope and intercept

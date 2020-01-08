@@ -23,10 +23,10 @@ read.chicago.flowSet <- function(filename, instrument = "nHTS", fullpath = FALSE
   cat(paste0("Looking for files at: \n", filename, "\n"))
   
   if(instrument == "nHTS") {
-    return(merge_flowSet(read.flowSet(path = filename, alter.names = TRUE)))
+    return(merge_flowSet(flowCore::read.flowSet(path = filename, alter.names = TRUE)))
   }
   else if (instrument == "HTS") {
-    return(merge_flowSet(read.flowSet(path = filename), method = "new"))
+    return(merge_flowSet(flowCore::read.flowSet(path = filename), method = "new"))
   }
   else (stop("instrument must be 'nHTS' or 'HTS'"))
 }
