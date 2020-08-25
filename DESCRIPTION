@@ -2,7 +2,7 @@ Package: flownalysis
 Title: Analysis of Yeast Protein Induction and pH by Flow Cytometry
 Version: 0.0.0.9000
 Authors@R: person("Catherine", "Triandafillou", email = "ctriandafillou@uchicago.edu", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: This package contains helper functions to read in and analyze data in the standard .fcs format (3.0 or 3.1). There are specificities to data generated on instruments at The University of Chicago Flow Cytometry core, but many functions can be modified so that they are generally applicable. Functions in this package can be used to analyze data from and generate the figures for 'Transient Intracellular Acidification Regulates the Core Transcriptional Heat Shock Response' by Triandafillou et al., eLife 2020.
 Depends: R (>= 3.2.2)
 License: What license is it under?
 Encoding: UTF-8
